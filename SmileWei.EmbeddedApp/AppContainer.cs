@@ -29,10 +29,11 @@ namespace SmileWei.EmbeddedApp
             appIdleEvent = new EventHandler(appIdleAction);
         }
 
-        public AppContainer(IContainer container)
+        public AppContainer(IContainer container, bool showEmbedResult = false)
         {
             container.Add(this);
             InitializeComponent();
+            this.ShowEmbedResult = showEmbedResult;
             appIdleAction = new Action<object, EventArgs>(Application_Idle);
             appIdleEvent = new EventHandler(appIdleAction);
         }
@@ -41,22 +42,23 @@ namespace SmileWei.EmbeddedApp
         /// </summary>
         public void Start()
         {
-            if (m_AppProcess != null)
+            if (AppProcess != null)
             {
                 Stop();
             }
+
             try
             {
                 ProcessStartInfo info = new ProcessStartInfo(this.m_AppFilename);
                 info.UseShellExecute = true;
                 info.WindowStyle = ProcessWindowStyle.Minimized;
                 //info.WindowStyle = ProcessWindowStyle.Hidden;
-                m_AppProcess = System.Diagnostics.Process.Start(info);
+                AppProcess = System.Diagnostics.Process.Start(info);
                 // Wait for process to be created and enter idle condition
-                m_AppProcess.WaitForInputIdle();
+                AppProcess.WaitForInputIdle();
                 //todo:下面这两句会引发 NullReferenceException 异常，不知道怎么回事                
-                //m_AppProcess.Exited += new EventHandler(m_AppProcess_Exited);
-                //m_AppProcess.EnableRaisingEvents = true;
+                //AppProcess.Exited += new EventHandler(AppProcess_Exited);
+                //AppProcess.EnableRaisingEvents = true;
                 Application.Idle += appIdleEvent;
             }
             catch (Exception ex)
@@ -66,12 +68,12 @@ namespace SmileWei.EmbeddedApp
                     , "*" + ex.ToString()
                     , "*StackTrace:" + ex.StackTrace
                     ,"*Source:"+ex.Source
-                    ), "内嵌程序加载失败");
-                if (m_AppProcess != null)
+                    ), "Failed to load app.");
+                if (AppProcess != null)
                 {
-                    if (!m_AppProcess.HasExited)
-                        m_AppProcess.Kill();
-                    m_AppProcess = null;
+                    if (!AppProcess.HasExited)
+                        AppProcess.Kill();
+                    AppProcess = null;
                 }
             }
             
@@ -83,18 +85,18 @@ namespace SmileWei.EmbeddedApp
         /// <param name="e"></param>
         void Application_Idle(object sender, EventArgs e)
         {
-            if (this.m_AppProcess == null || this.m_AppProcess.HasExited)
+            if (this.AppProcess == null || this.AppProcess.HasExited)
             {
-                this.m_AppProcess = null;
+                this.AppProcess = null;
                 Application.Idle -= appIdleEvent;
                 return;
             }
-            if (m_AppProcess.MainWindowHandle == IntPtr.Zero) return;
+            if (AppProcess.MainWindowHandle == IntPtr.Zero) return;
             //Application.Idle -= appIdleEvent;
-            if (EmbedProcess(m_AppProcess, this))
+            if (EmbedProcess(AppProcess, this))
             { Application.Idle -= appIdleEvent; }
-            //ShowWindow(m_AppProcess.MainWindowHandle, SW_SHOWNORMAL);
-            //var parent = GetParent(m_AppProcess.MainWindowHandle);//你妹，不管用，全是0
+            //ShowWindow(AppProcess.MainWindowHandle, SW_SHOWNORMAL);
+            //var parent = GetParent(AppProcess.MainWindowHandle);//你妹，不管用，全是0
             //if (parent == this.Handle)
             //{
             //    Application.Idle -= appIdleEvent;
@@ -105,9 +107,9 @@ namespace SmileWei.EmbeddedApp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void m_AppProcess_Exited(object sender, EventArgs e)
+        void AppProcess_Exited(object sender, EventArgs e)
         {
-            m_AppProcess = null;
+            AppProcess = null;
         }
 
         /// <summary>
@@ -116,18 +118,17 @@ namespace SmileWei.EmbeddedApp
         /// </summary>
         public void Stop()
         {
-            if (m_AppProcess != null)// && m_AppProcess.MainWindowHandle != IntPtr.Zero)
+            if (AppProcess != null)// && AppProcess.MainWindowHandle != IntPtr.Zero)
             {
                 try
                 {
-                    if (!m_AppProcess.HasExited)
-                        m_AppProcess.Kill();
+                    if (!AppProcess.HasExited)
+                        AppProcess.Kill();
                 }
                 catch (Exception)
                 {
                 }
-                m_AppProcess = null;
-                //state = EmbedState.none;
+                AppProcess = null;
                 embedResult = 0;
             }
         }
@@ -140,10 +141,11 @@ namespace SmileWei.EmbeddedApp
 
         protected override void OnResize(EventArgs eventargs)
         {
-            if (m_AppProcess != null)
+            if (AppProcess != null)
             {
-                Win32API.MoveWindow(m_AppProcess.MainWindowHandle, 0, 0, this.Width, this.Height, true);
+                Win32API.MoveWindow(AppProcess.MainWindowHandle, 0, 0, this.Width, this.Height, true);
             }
+
             base.OnResize(eventargs);
         }
 
@@ -155,13 +157,9 @@ namespace SmileWei.EmbeddedApp
 
         #region 属性
         /// <summary>
-        /// application process
+        /// Embedded application's process
         /// </summary>
-        Process m_AppProcess = null;
-        public Process AppProcess {
-            get { return this.m_AppProcess; }
-            set { this.m_AppProcess = value; }
-        }
+        public Process AppProcess { get; set; }
 
         /// <summary>
         /// Target app's file name(*.exe)
@@ -204,17 +202,16 @@ namespace SmileWei.EmbeddedApp
         /// <summary>
         /// 标识内嵌程序是否已经启动
         /// </summary>
-        public bool IsStarted { get { return (this.m_AppProcess != null); } }
+        public bool IsStarted { get { return (this.AppProcess != null); } }
         
         #endregion 属性
 
       
         public void EmbedAgain()
         {
-            EmbedProcess(m_AppProcess, this);
+            EmbedProcess(AppProcess, this);
         }
 
-        //public EmbedState state = EmbedState.none;
         /// <summary>
         /// 如果函数成功，返回值为子窗口的原父窗口句柄；如果函数失败，返回值为NULL。若想获得多错误信息，请调用GetLastError函数。
         /// </summary>
@@ -231,12 +228,8 @@ namespace SmileWei.EmbeddedApp
 
             try
             {
-                // Put it into this form
+                // Put it into this container
                 embedResult = Win32API.SetParent(app.MainWindowHandle, control.Handle);
-                //if (embedResult != 0)
-                //{ state = EmbedState.embeded; }
-                //else
-                //{ state = EmbedState.embedFailed; }
             }
             catch (Exception)
             { }

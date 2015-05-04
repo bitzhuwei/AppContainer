@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SmileWei.EmbeddedApp
 {
-    class Win32API
+    public class Win32API
     {
         #region Win32 API
         [DllImport("user32.dll", EntryPoint = "GetWindowThreadProcessId", SetLastError = true,
