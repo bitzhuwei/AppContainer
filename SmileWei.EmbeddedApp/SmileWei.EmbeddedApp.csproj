@@ -50,6 +50,7 @@
     </Compile>
     <Compile Include="EmbedState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Win32API.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AppContainer.bmp">
