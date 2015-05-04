@@ -20,9 +20,10 @@ namespace SmileWei.EmbeddedApp
     {
         Action<object, EventArgs> appIdleAction = null;
         EventHandler appIdleEvent = null;
-        public AppContainer()
+        public AppContainer(bool showEmbedResult = false)
         {
             InitializeComponent();
+            this.ShowEmbedResult = showEmbedResult;
             appIdleAction = new Action<object, EventArgs>(Application_Idle);
             appIdleEvent = new EventHandler(appIdleAction);
         }
@@ -246,6 +247,36 @@ namespace SmileWei.EmbeddedApp
         [DllImport("user32.dll", EntryPoint = "PostMessageA", SetLastError = true)]
         private static extern bool PostMessage(IntPtr hwnd, uint Msg, uint wParam, uint lParam);
 
+        /// <summary>
+        /// 获取系统错误信息描述
+        /// </summary>
+        /// <param name="errCode">系统错误码</param>
+        /// <returns></returns>
+        public static string GetLastError()
+        {
+            var errCode = Marshal.GetLastWin32Error();
+            IntPtr tempptr = IntPtr.Zero;
+            string msg = null;
+            FormatMessage(0x1300, ref tempptr, errCode, 0, ref msg, 255, ref tempptr);
+            return msg;
+        }
+        /// <summary>
+        /// 获取系统错误信息描述
+        /// </summary>
+        /// <param name="errCode">系统错误码</param>
+        /// <returns></returns>
+        public static string GetLastErrorString(int errCode)
+        {
+            IntPtr tempptr = IntPtr.Zero;
+            string msg = null;
+            FormatMessage(0x1300, ref tempptr, errCode, 0, ref msg, 255, ref tempptr);
+            return msg;
+        }
+
+        [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
+        public extern static int FormatMessage(int flag, ref IntPtr source, int msgid, int langid, ref string buf, int size, ref IntPtr args);
+
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr GetParent(IntPtr hwnd);
         ///// <summary>
@@ -313,10 +344,12 @@ namespace SmileWei.EmbeddedApp
         public void EmbedAgain()
         {
             EmbedProcess(m_AppProcess, this);
-            MessageBox.Show("完毕");
         }
 
         //public EmbedState state = EmbedState.none;
+        /// <summary>
+        /// 如果函数成功，返回值为子窗口的原父窗口句柄；如果函数失败，返回值为NULL。若想获得多错误信息，请调用GetLastError函数。
+        /// </summary>
         public int embedResult = 0;
         /// <summary>
         /// 将指定的程序嵌入指定的控件
@@ -354,6 +387,12 @@ namespace SmileWei.EmbeddedApp
             catch (Exception)
             { }
 
+            if (ShowEmbedResult)
+            {
+                var errorString = AppContainer.GetLastError();
+                MessageBox.Show(errorString);
+            }
+
             return (embedResult != 0);
         }
 
@@ -367,5 +406,10 @@ namespace SmileWei.EmbeddedApp
                 Console.WriteLine(f.Parent == null);
             }
         }
+
+        /// <summary>
+        /// Show a MessageBox to tell whether the embedding is successfully done.
+        /// </summary>
+        public bool ShowEmbedResult { get; set; }
     }
 }

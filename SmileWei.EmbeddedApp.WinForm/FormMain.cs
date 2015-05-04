@@ -15,6 +15,7 @@ namespace SmileWei.EmbeddedApp.WinForm
         public FormMain()
         {
             InitializeComponent();
+            this.appBox.ShowEmbedResult = true;
             Application.Idle += Application_Idle;
             //appBox.AppFilename = @"C:\Users\DELL\AppData\Local\Google\Chrome\Application\chrome.exe";
             //appBox.Start();
@@ -58,6 +59,12 @@ namespace SmileWei.EmbeddedApp.WinForm
         private void lblEmbedAgain_Click(object sender, EventArgs e)
         {
             appBox.EmbedAgain();
+            //var embedResult = appBox.embedResult;
+            //if(embedResult==0)
+            //{
+            //    var errorString = AppContainer.GetLastError();
+            //    MessageBox.Show(errorString);
+            //}
         }
 
         private void lblEmbedHandle_Click(object sender, EventArgs e)
