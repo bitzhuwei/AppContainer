@@ -74,7 +74,7 @@ namespace SmileWei.EmbeddedApp.WinForm
             {
                 var handle = frmHandle.GetHandle();
                 SetParent(handle, this.Handle);
-                AppContainer.SetWindowLong(new HandleRef(this.appBox, handle), GWL_STYLE, WS_VISIBLE);                
+                Win32API.SetWindowLong(new HandleRef(this.appBox, handle), GWL_STYLE, WS_VISIBLE);       
             }
         }
 
@@ -98,7 +98,16 @@ namespace SmileWei.EmbeddedApp.WinForm
 
         private void FormMain_Resize(object sender, EventArgs e)
         {
-            appBox.NewMethod();
+            var app = appBox.AppProcess;
+            if (app == null) { return; }
+
+            var c = Form.FromHandle(app.MainWindowHandle);
+            var f = c as Form;
+            if (f != null)
+            {
+                Console.WriteLine(f.Parent == null);
+            }
+
         }
 
     }
