@@ -16,8 +16,8 @@ namespace SmileWei.EmbeddedApp.WinForm
         {
             InitializeComponent();
             Application.Idle += Application_Idle;
-            appBox.AppFilename = @"C:\Users\DELL\AppData\Local\Google\Chrome\Application\chrome.exe";
-            appBox.Start();
+            //appBox.AppFilename = @"C:\Users\DELL\AppData\Local\Google\Chrome\Application\chrome.exe";
+            //appBox.Start();
         }
 
         void Application_Idle(object sender, EventArgs e)
@@ -28,7 +28,7 @@ namespace SmileWei.EmbeddedApp.WinForm
                 {
                     try
                     {
-                        lblInfo.Text = string.Format("{0}|{1}",
+                        lblInfo.Text = string.Format("Main Window Handle:{0}|Original Parent Window Handle:{1}",
                             appBox.AppProcess.MainWindowHandle,
                             appBox.embedResult);
                     }

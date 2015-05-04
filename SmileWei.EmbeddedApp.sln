@@ -1,9 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmileWei.EmbeddedApp", "SmileWei.EmbeddedApp\SmileWei.EmbeddedApp.csproj", "{90B74ADF-891A-47E2-922C-450BE2271164}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmileWei.EmbeddedApp.WinForm", "SmileWei.EmbeddedApp.WinForm\SmileWei.EmbeddedApp.WinForm.csproj", "{BB878439-808F-409C-9106-F975E7A08CEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp", "DemoApp\DemoApp.csproj", "{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +39,16 @@ Global
 		{BB878439-808F-409C-9106-F975E7A08CEA}.Release|Mixed Platforms.Build.0 = Release|x86
 		{BB878439-808F-409C-9106-F975E7A08CEA}.Release|x86.ActiveCfg = Release|x86
 		{BB878439-808F-409C-9106-F975E7A08CEA}.Release|x86.Build.0 = Release|x86
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{23B9B0D6-BE73-46A0-9ED0-D1719CA27409}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
