@@ -21,6 +21,12 @@ namespace SmileWei.EmbeddedApp
         Action<object, EventArgs> appIdleAction = null;
         EventHandler appIdleEvent = null;
 
+
+        /// <summary>
+        /// for winform designer.
+        /// </summary>
+        private AppContainer() : this(false) { }
+
         public AppContainer(bool showEmbedResult = false)
         {
             InitializeComponent();
@@ -64,10 +70,10 @@ namespace SmileWei.EmbeddedApp
             catch (Exception ex)
             {
                 MessageBox.Show(this, string.Format("{1}{0}{2}{0}{3}"
-                    ,Environment.NewLine
+                    , Environment.NewLine
                     , "*" + ex.ToString()
                     , "*StackTrace:" + ex.StackTrace
-                    ,"*Source:"+ex.Source
+                    , "*Source:" + ex.Source
                     ), "Failed to load app.");
                 if (AppProcess != null)
                 {
@@ -76,7 +82,7 @@ namespace SmileWei.EmbeddedApp
                     AppProcess = null;
                 }
             }
-            
+
         }
         /// <summary>
         /// 确保应用程序嵌入此容器
@@ -203,10 +209,10 @@ namespace SmileWei.EmbeddedApp
         /// 标识内嵌程序是否已经启动
         /// </summary>
         public bool IsStarted { get { return (this.AppProcess != null); } }
-        
+
         #endregion 属性
 
-      
+
         public void EmbedAgain()
         {
             EmbedProcess(AppProcess, this);
@@ -219,7 +225,7 @@ namespace SmileWei.EmbeddedApp
         /// <summary>
         /// 将指定的程序嵌入指定的控件
         /// </summary>
-        private bool EmbedProcess(Process app,Control control)
+        private bool EmbedProcess(Process app, Control control)
         {
             // Get the main handle
             if (app == null || app.MainWindowHandle == IntPtr.Zero || control == null) return false;
